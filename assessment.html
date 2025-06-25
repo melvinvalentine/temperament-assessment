@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Temperament Assessment</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #c2e8e3;
+      color: #0c2340;
+      font-family: 'Nunito', sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2, .greeting, .results {
+      text-align: center;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    .question p {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .btn {
+      display: block;
+      margin: 30px auto;
+      padding: 10px 20px;
+      background-color: #0c2340;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    .btn:hover {
+      background-color: #0a1b30;
+    }
+    .results {
+      font-size: 1.2em;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Temperament Assessment</h2>
+    <div class="greeting" id="userGreeting"></div>
+
+    <form id="assessmentForm">
+      <div id="questionsContainer"></div>
+      <button type="submit" class="btn">Submit Assessment</button>
+    </form>
+
+    <div class="results" id="resultText"></div>
+    <button class="btn" onclick="retakeAssessment()">Retake Assessment</button>
+  </div>
+
+  <script>
+    const temperamentMap = { A: 'Choleric', B: 'Sanguine', C: 'Melancholic', D: 'Phlegmatic' };
+    const questionData = [
+      ["Ready to jump into new tasks, energized by challenges", "Agreeable, easy to get along with", "Sensitive to the emotions of others", "Excitable, passionate, quick to say yes"],
+      ["Motivated to achieve goals, eager to be the leader", "Energetic, lively, exhibits love and affection openly", "Logical, gathers facts and data, likes lists", "Flexible, able to adjust to new conditions, calm in the midst of chaos"],
+      ["Avoids conflict and drama, levelheaded", "Fun to be around, a good storyteller with a sense of humor", "Self-motivated, usually right", "Careful, thoughtful, doesn't rush into things"],
+      ["Upbeat, always sees the best in people and situations", "Detail-oriented, orderly, tidy", "Confident and assertive with my opinion", "Cooperative, open to the needs and ideas of others"],
+      ["A determined problem solver, finds a way to get it done", "Playful, spontaneous, lives in the moment", "Considerate, kind, polite", "Serious, avoids being impulsive or flashy"],
+      ["Friendly, outgoing, talkative", "Efficient and effective with my time and effort", "Relaxed, hard to provoke or annoy", "Precise, thorough, has very high standards"],
+      ["Not confident in social situations", "Can be quick-tempered", "Struggles to make decisions quickly", "Can dominate conversations"],
+      ["Unafraid to disagree with others, bossy", "Uncomfortable with solitude, afraid of missing out", "Rarely sets goals for myself, unclear on purpose or direction", "Sometimes feels isolated, too introspective"],
+      ["Can be overbearing, prefers to be in control", "Unsure of myself, reluctant to jump into conversations or activities", "Seeks diversions from tasks, can waste time or daydream", "Prone to feeling sad or gloomy, gets hung up on bad news"],
+      ["Persuades others to do things my way, thinks the end justifies the means", "Often exaggerates stories, compulsive talker", "Uses sarcasm or the silent treatment when upset", "Struggles to express enthusiasm"],
+      ["Frequently loses track of time, often late", "Easily distracted, starts projects and doesn’t finish them", "Self-critical, sometimes harsh with myself", "Can be overly dependent on others"],
+      ["Perfectionistic, can be paralyzed by fear of failure", "Easily annoyed by inefficiency", "Can be manipulative or controlling in relationships", "Easily bored, needs constant stimulation"],
+      ["Competitive, enjoys a challenge", "Enthusiastic, enjoys entertaining others", "Loyal, values strong relationships", "Easy-going, dislikes conflict"],
+      ["Disciplined, likes structure", "Adventurous, seeks new experiences", "Reflective, enjoys thinking deeply", "Accommodating, puts others first"],
+      ["Bold, speaks my mind", "Charismatic, draws others in", "Thoughtful, notices small details", "Calm, helps others stay grounded"],
+      ["Blunt, says what I mean", "Lively, often the center of attention", "Cautious, thinks before speaking", "Reliable, keeps my cool under pressure"],
+      ["Goal-oriented, focused on results", "Fun-loving, prefers play over work", "Reserved, doesn’t open up easily", "Supportive, prefers harmony"],
+      ["Driven, dislikes delays or indecision", "Optimistic, expects the best", "Analytical, sees patterns others miss", "Compassionate, gives others the benefit of the doubt"],
+      ["Assertive, defends my beliefs", "Expressive, wears my heart on my sleeve", "Private, keeps emotions to myself", "Patient, willing to wait and listen"],
+      ["Decisive, takes action quickly", "Social, enjoys group activities", "Introspective, enjoys time alone", "Nurturing, wants others to feel safe"],
+      ["Likes to take charge and give directions", "Often the life of the party, enjoys being the center of attention", "A deep thinker, sometimes overthinks decisions", "Calm and steady, rarely flustered"],
+      ["Not afraid to challenge authority if necessary", "Naturally optimistic, always sees the bright side", "Methodical, plans ahead carefully", "Cooperative, values group harmony"],
+      ["Very independent, prefers to work alone", "Highly expressive, wears emotions openly", "Naturally cautious, avoids risks", "Likes consistency and routine"],
+      ["Assertive and persuasive in conversations", "Playful and enjoys spontaneous activities", "Deeply empathetic and emotionally aware", "Easygoing and lets others take the lead"],
+      ["Goal-oriented and results-driven", "Energetic and thrives in social situations", "Thoughtful and reflective about past experiences", "Supportive and avoids confrontation"],
+      ["Enjoys setting and reaching difficult goals", "Easily distracted by fun opportunities", "Prefers working alone where I can think clearly", "Often agrees to things just to keep the peace"],
+      ["Comfortable making fast decisions", "Talks often and enjoys being noticed", "Prone to worry and overanalysis", "Trusts others to make decisions for me"],
+      ["Always looking for ways to improve or fix things", "Prefers to keep things light and humorous", "Often needs time alone to recharge", "Tries to avoid upsetting anyone"],
+      ["Highly driven, needs results", "Loves excitement and being around others", "Quiet, notices small changes in behavior or mood", "Patient, even when others are not"],
+      ["Focused on action and efficiency", "Enjoys group interaction more than solitude", "Prefers routine over surprises", "Often goes along with others to avoid conflict"],
+      ["Direct and results-focused", "Expressive and enthusiastic", "Quiet and detail-oriented", "Peaceful and considerate"],
+      ["Independent and strong-willed", "Fun-loving and spontaneous", "Sensitive and introspective", "Loyal and dependable"],
+      ["Blunt and honest, even if it hurts", "Easily excited and animated", "Perfectionistic and cautious", "Quietly supportive of others"],
+      ["Quick to act and assertive", "Sociable and engaging", "Thoughtful and careful with words", "Slow to anger and forgiving"],
+      ["Goal-driven and likes competition", "Expressive and dramatic", "Often serious and skeptical", "Agreeable and values peace"],
+      ["Confident in leadership roles", "Highly emotional and talkative", "Self-critical and reserved", "Relaxed and agreeable"],
+      ["Values action over discussion", "Often entertains others with stories", "Analyzes everything deeply", "Listens more than speaks"],
+      ["Needs to feel in control", "Needs social interaction often", "Needs quiet and reflection time", "Needs stability and comfort"],
+      ["Often feels driven and determined", "Often feels energized by others", "Often feels deeply but rarely expresses it", "Often feels responsible for others’ feelings"],
+      ["Competitive and driven to succeed", "Friendly and loves being around people", "Quiet and deeply thoughtful", "Kind and tries to avoid conflict"]
+    ];
+
+    const container = document.getElementById('questionsContainer');
+    questionData.forEach((opts, i) => {
+      const qDiv = document.createElement('div');
+      qDiv.className = 'question';
+      qDiv.innerHTML = `<p>${i + 1}. Am I someone who is...</p>
+        <label><input type="radio" name="q${i + 1}" value="A" required> ${opts[0]}</label>
+        <label><input type="radio" name="q${i + 1}" value="B"> ${opts[1]}</label>
+        <label><input type="radio" name="q${i + 1}" value="C"> ${opts[2]}</label>
+        <label><input type="radio" name="q${i + 1}" value="D"> ${opts[3]}</label>`;
+      container.appendChild(qDiv);
+    });
+
+    const name = localStorage.getItem('userName') || 'Learner';
+    document.getElementById('userGreeting').textContent = `Welcome, ${name}! Please complete the assessment.`;
+
+    document.getElementById('assessmentForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const scores = { Choleric: 0, Sanguine: 0, Melancholic: 0, Phlegmatic: 0 };
+      for (let i = 1; i <= questionData.length; i++) {
+        const answer = document.querySelector(`input[name="q${i}"]:checked`).value;
+        scores[temperamentMap[answer]]++;
+      }
+      const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+      const [primary, secondary] = sorted;
+      document.getElementById('resultText').textContent = `${name}, your primary temperament is ${primary[0]} and your secondary temperament is ${secondary[0]}.`;
+    });
+
+    function retakeAssessment() {
+      localStorage.clear();
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>

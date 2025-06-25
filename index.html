@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Temperament Assessment - Instructions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #c2e8e3;
+      color: #0c2340;
+      font-family: 'Nunito', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    .header {
+      text-align: center;
+      font-size: 2em;
+      font-weight: bold;
+      margin-bottom: 30px;
+    }
+    .logo {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      height: 60px;
+    }
+    .box {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+    .example-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    .example-table th,
+    .example-table td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    .start-btn {
+      display: block;
+      width: fit-content;
+      margin: 20px auto 0;
+      background-color: #0c2340;
+      color: #ffffff;
+      border: none;
+      padding: 12px 25px;
+      font-size: 1em;
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .start-btn:hover {
+      background-color: #0a1b30;
+    }
+    .name-entry {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .name-entry input {
+      padding: 10px;
+      font-size: 1em;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      width: 60%;
+      max-width: 300px;
+    }
+  </style>
+</head>
+<body>
+  <img src= "logo.png" alt="Logo" class="logo" />
+  <div class="container">
+    <div class="header">Directions</div>
+    <div class="box">
+      <p>
+        In order to easily calculate your results at the end, circle your answer to each question.
+        After completing all questions, your results will be shown automatically.
+      </p>
+      <p><strong>Example:</strong></p>
+      <table class="example-table">
+        <tr>
+          <th>A</th>
+          <th>B</th>
+          <th>C</th>
+          <th>D</th>
+          <th>Answer</th>
+        </tr>
+        <tr>
+          <td>Ready to jump into new tasks, energized by challenges</td>
+          <td>Agreeable, easy to get along with</td>
+          <td>Sensitive to the emotions of others</td>
+          <td>Excitable, passionate, quick to say yes</td>
+          <td>C</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="name-entry">
+      <label for="userName">Please enter your name to begin:</label><br/>
+      <input type="text" id="userName" name="userName" placeholder="Your Name" required />
+      <button class="start-btn" onclick="startAssessment()">Start Assessment</button>
+    </div>
+  </div>
+
+  <script>
+    function startAssessment() {
+      const nameInput = document.getElementById('userName').value.trim();
+      if (nameInput) {
+        localStorage.setItem('userName', nameInput);
+        window.location.href = 'assessment.html';
+      } else {
+        alert('Please enter your name before continuing.');
+      }
+    }
+  </script>
+</body>
+</html>
