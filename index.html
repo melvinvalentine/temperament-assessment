@@ -28,7 +28,15 @@
       position: absolute;
       top: 20px;
       right: 30px;
-      height: 300px; /* was 60px */
+      height: 300px;
+      max-width: 40vw;
+      z-index: -1;
+    }
+    @media (max-width: 768px) {
+      .logo {
+        height: 150px;
+        right: 10px;
+      }
     }
     .box {
       background: white;
@@ -36,6 +44,8 @@
       border-radius: 15px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
       margin-bottom: 30px;
+      position: relative;
+      z-index: 1;
     }
     .example-table {
       width: 100%;
@@ -79,12 +89,12 @@
   </style>
 </head>
 <body>
-  <img src= "logo.png" alt="Logo" class="logo" />
+  <img src="logo.png" alt="Logo" class="logo" />
   <div class="container">
     <div class="header">Directions</div>
     <div class="box">
       <p>
-        In order to easily calculate your results at the end, circle your answer to each question.
+        In order to easily calculate your results at the end, <strong>select your answer</strong> to each question.
         After completing all questions, your results will be shown automatically.
       </p>
       <p><strong>Example:</strong></p>
